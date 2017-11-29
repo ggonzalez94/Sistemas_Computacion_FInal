@@ -1,0 +1,12 @@
+{
+  "name": "Sistemas_Computacion_Final",
+  "private": true,
+  "scripts": {
+    "start": "meteor run"
+  },
+  "dependencies": {
+    "babel-runtime": "^6.20.0",
+    "highcharts": "^6.0.3",
+    "meteor-node-stubs": "~0.2.4"
+  }
+}

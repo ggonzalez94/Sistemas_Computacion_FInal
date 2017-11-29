@@ -1,0 +1,77 @@
+
+<head>
+  <title>Sistemas_Computacion_Final</title>
+</head>
+
+<body>
+</body>
+
+<template name="layout_home">
+{{>yield "navbar"}}
+{{>yield "contenido"}}
+</template>
+
+<template name = "navbar_template">
+<div class="navbar navbar-inverse" role="navigation">
+  <div class="navbar-header">
+    <a class="navbar-brand" href="/">CETA</a>
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+  </div>
+  <div class="navbar-collapse collapse">
+    <ul class="nav navbar-nav">
+      <li><a href="/">Home</a></li>
+      <li><a href="/modificar_parametros">Modificar Parametros</a></li>
+      <li><a href="/about">About PIV</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      {{> loginButtons}} <!-- here -->
+    </ul>
+  </div>
+</div>
+</template>
+
+<template name = "caudal_template">
+  <div id = "canvas_container" class="col-md-10 col-sm-12">
+      <canvas id="myChart" height="400"></canvas>
+  </div>
+</template>
+
+<template name = "modificar_parametros_template">
+  {{#if currentUser }}
+  <div class="col-md-6 col-xs-12">
+    <form>
+      <div class="form-group">
+        <label for="steps">Steps:</label>
+        <select class="form-control" name="steps">
+        <option>1</option>
+        <option>2</option>
+        <option>3</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="interrogation-window">Interrogation Window:</label>
+        <input type="interrogation-window" class="form-control" name="interrogation_window">
+      </div>
+      <div class="form-group row">
+      <div class="col-md-6 col-xs-6">
+        <label for="XRoi">XRoi</label>
+        <input class="form-control" name="XRoi" type="text">
+      </div>
+      <div class="col-md-6 col-xs-6">
+        <label for="XRoi">YRoi</label>
+        <input class="form-control" name="YRoi" type="text">
+      </div>
+    </div>
+
+      <button type="submit" class="btn btn-default">Submit</button>
+    </form>
+  </div>
+  {{else}}
+  Not logged in
+  {{/if}}
+</template>
