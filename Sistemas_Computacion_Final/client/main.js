@@ -15,6 +15,9 @@ if (Meteor.isClient) {
 		this.render('navbar_template', {to: 'navbar'});
 		this.render('about_template', {to: 'contenido'});
 	});
+	Router.route('/recibir', function () {
+
+	});
 }
 
 // Grafica de lineas
@@ -74,7 +77,7 @@ Template.caudal_template.onRendered(function(){
 		if (doc){
 			//Datos del grafico
 			var data = {
-	        labels: ["January", "February", "March", "April", "May", "June", "July"],
+	        labels: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"],
 	        datasets: [{
 	            label: "My First dataset",
 	            fillColor: "rgba(220,220,220,0.2)",
@@ -83,7 +86,7 @@ Template.caudal_template.onRendered(function(){
 	            pointStrokeColor: "#fff",
 	            pointHighlightFill: "#fff",
 	            pointHighlightStroke: "rgba(220,220,220,1)",
-	            data: [Caudal.findOne({mes:'Enero'}).caudal, Caudal.findOne({mes:'Febrero'}).caudal, Caudal.findOne({mes:'Abril'}).caudal, random(), random(), random(), random()]
+	            data: [calcular_promedio(0),calcular_promedio(1), calcular_promedio(2), calcular_promedio(3), calcular_promedio(4), calcular_promedio(5), calcular_promedio(6),calcular_promedio(7),calcular_promedio(8),calcular_promedio(9),calcular_promedio(10),calcular_promedio(11)]
 	        }]
 	    };
 			var $parent = $("#canvas_container");
@@ -107,4 +110,23 @@ Template.modificar_parametros_template.events({
 });
 function random() {
     return Math.floor((Math.random() * 100) + 1);
+}
+
+function calcular_promedio(mes){
+	listado_caudal = Caudal.find({mes:mes})
+	if (listado_caudal.count()){
+		var cantidad_datos=0;
+		var caudal_promedio=0;
+		listado_caudal.forEach((dato) => {
+		console.log(dato);
+		caudal_promedio+=dato.caudal;
+		cantidad_datos += 1;
+		});
+		caudal_promedio = caudal_promedio / cantidad_datos;
+		console.log(caudal_promedio);
+		return caudal_promedio;
+	}
+	else{
+		return 0;
+	}
 }

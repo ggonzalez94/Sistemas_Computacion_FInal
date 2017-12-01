@@ -26,3 +26,5 @@ ian:accounts-ui-bootstrap-3
 chart:chart
 session
 jquery
+http
+meteorhacks:picker

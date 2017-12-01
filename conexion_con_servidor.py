@@ -7,7 +7,9 @@ Este archivo se encarga de leer el video, procesarlo y mostrar
 los resultados en una imagen.
 """
 
-import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use("Pdf")
+import matplotlib.pyplot
 import main.pruebaPIVF as PIV
 import main.funciones_parseo_args as fun_pars_args
 import main.rectificar_video as rect_vid
@@ -15,10 +17,15 @@ import time
 import os
 import sys
 import pymongo as pm
+import datetime
+import random
+import requests
 from pkg_resources import resource_filename
 from skimage.io import imread_collection
 from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import wait
+
+url = 'http://192.168.50.177:3000/recibir'
 
 def procesar2(xCoord, yCoord, xLen, yLen,img1,img2, image_index):
     return PIV.procesar(xCoord, yCoord, xLen, yLen, img1, img2, image_index)
@@ -27,18 +34,17 @@ def video2image(filename, fps=1, output="out%d.", color="gray", formato="jpg", i
     os.system("ffmpeg -loglevel 8 -ss {0} -t {1} -i {2} -vf \"fps={3}, format={4}\" {5}{6}{7}"
                .format(inicio, duracion, filename, fps, color, path, output, formato))
 def calcular_caudal(matriz_x,matriz_y,matriz_u,matriz_v):
-    caudal = 100
-    return caudal
-def conectar_con_base_datos():
-    client = pm.MongoClient('mongodb://127.0.0.1:3001/meteor')
-    db = client.meteor
-    caudal = db.caudal
+    caudal = random.randint(10,100)
     return caudal
     
-def escribir_caudal(caudal_calculado,mes,caudal_collection):
-    documento = {'mes':mes,'caudal':caudal_calculado}
-    caudal_collection.insert_one(documento)
-
+def escribir_caudal(caudal_calculado):
+    fecha = datetime.datetime.utcnow()
+    mes = fecha.month - 1
+    dia = fecha.day
+    documento = {'mes':mes,'dia':dia, 'caudal':caudal_calculado}
+    response = requests.post(url,data=documento)
+    return response
+    
 def main(argv):
 
     """Funcion principal del programa
@@ -132,12 +138,10 @@ def main(argv):
     finish_time = time.time()
     print("El programa tarda: %.2f segundos" %(finish_time - start_time))
     
-    # with open('resultados', 'a') as f:
-    #     f.write("El programa tarda: %.2f segundos\n" %(finish_time - start_time))
     
-    imgplot = plt.imshow(imagenes[0])
-    plt.quiver(dict_promedio['x'], dict_promedio['y'], dict_promedio['u'], dict_promedio['v'], color='g')
-    plt.show()
+#    imgplot = plt.imshow(imagenes[0])
+#    plt.quiver(dict_promedio['x'], dict_promedio['y'], dict_promedio['u'], dict_promedio['v'], color='g')
+#    plt.show()
 
     
     #delete_images(resource_filename('main','static/vid/rectificados/*.'), formato)
@@ -145,14 +149,10 @@ def main(argv):
     
     #Calcular caudal
     caudal_calculado = calcular_caudal(dict_promedio['x'], dict_promedio['y'], dict_promedio['u'], dict_promedio['v'])
-    mes = 'Enero'
     
-    #Conexion con la base de datos
-    caudal_collection = conectar_con_base_datos()
-    escribir_caudal(caudal_calculado,mes,caudal_collection)
-    
-    caudal_enero = caudal_collection.find_one()
-    print(caudal_enero['caudal'])
+    #Conexion con la base de datos    
+    respuesta = escribir_caudal(caudal_calculado)
+    print(respuesta.text)
 
 if __name__ == "__main__":
    main(sys.argv[1:])
