@@ -33,7 +33,7 @@ def procesar2(xCoord, yCoord, xLen, yLen,img1,img2, image_index):
 def video2image(filename, fps=1, output="out%d.", color="gray", formato="jpg", inicio=0, duracion=0, path=resource_filename('main','static/imagenes_video/')):
     os.system("ffmpeg -loglevel 8 -ss {0} -t {1} -i {2} -vf \"fps={3}, format={4}\" {5}{6}{7}"
                .format(inicio, duracion, filename, fps, color, path, output, formato))
-def calcular_caudal(matriz_x,matriz_y,matriz_u,matriz_v):
+def calcular_caudal(matriz_x,matriz_y,matriz_u,matriz_v, video):
     
     suma=0
     i=0
@@ -48,14 +48,14 @@ def calcular_caudal(matriz_x,matriz_y,matriz_u,matriz_v):
             suma = subelem + suma
             i = i+1
 
-    if(args.video == "facu.mp4"):
+    if(video == "facu.mp4"):
         # video puente
         metros = 8
         pixeles = 540
         ancho = 20
         profundidad = 2
 
-    elif(args.video == "madera.MOV"):
+    elif(video == "madera.MOV"):
         # video madera
         metros = 3
         pixeles = 420
@@ -186,7 +186,7 @@ def main(argv):
     rect_vid.delete_images("static/imagenes_video/")
     
     #Calcular caudal
-    caudal_calculado = calcular_caudal(dict_promedio['x'], dict_promedio['y'], dict_promedio['u'], dict_promedio['v'])
+    caudal_calculado = calcular_caudal(dict_promedio['x'], dict_promedio['y'], dict_promedio['u'], dict_promedio['v'], args.video)
     
     #Conexion con la base de datos    
     respuesta = escribir_caudal(caudal_calculado)
