@@ -34,7 +34,45 @@ def video2image(filename, fps=1, output="out%d.", color="gray", formato="jpg", i
     os.system("ffmpeg -loglevel 8 -ss {0} -t {1} -i {2} -vf \"fps={3}, format={4}\" {5}{6}{7}"
                .format(inicio, duracion, filename, fps, color, path, output, formato))
 def calcular_caudal(matriz_x,matriz_y,matriz_u,matriz_v):
-    caudal = random.randint(10,100)
+    
+    suma=0
+    i=0
+    metros = 8
+    pixeles = 540
+    ancho = 20
+    profundidad = 2
+
+
+    for elem in matriz_v:
+        for subelem in elem:
+            suma = subelem + suma
+            i = i+1
+
+    if(args.video == "facu.mp4"):
+        # video puente
+        metros = 8
+        pixeles = 540
+        ancho = 20
+        profundidad = 2
+
+    elif(args.video == "madera.MOV"):
+        # video madera
+        metros = 3
+        pixeles = 420
+        ancho = 4
+        profundidad = 0.5
+
+    suma = suma/i
+    suma = suma * args.fps # lo paso a pix/segundo
+
+    # calculo de velocidad en m/s
+    suma = suma * (metros / pixeles)
+
+    # area semielipse
+    area = (3.14 * ancho/2 * profundidad/2)/2
+
+    caudal = suma * area
+    print(caudal)
     return caudal
     
 def escribir_caudal(caudal_calculado):
